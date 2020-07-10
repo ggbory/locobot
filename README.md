@@ -3,7 +3,7 @@ Using mobile manipulation platform to process threatening items
 
 ## download model
 ```
-
+$ source download_model.sh
 ```
 
 ## make
@@ -28,5 +28,12 @@ $ source start_tx2.sh
 
 ## launch back pack tracking
 ```
+$ source environment.sh
 $ roslaunch astar tracking.launch
+```
+
+## move robot
+```
+tx2	$ locobot
+locobot	$ hcc_base
 ```
