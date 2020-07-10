@@ -1,5 +1,5 @@
-/build
-/devel
-.swp
-.pyc
-.pth
+build
+devel
+*.swp
+*.pyc
+*.pth
