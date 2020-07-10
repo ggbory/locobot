@@ -60,18 +60,16 @@ class bb_ssd_mobile_lite(object):
 		self.BoundingBoxes_pub = rospy.Publisher("BoundingBoxes/", BoundingBoxes, queue_size = 1)
 
 		## msg filter 
-		# self.depth_sub = message_filters.Subscriber(
-		# 	"camera/aligned_depth_to_color/image_raw", Image)
-		# self.image_sub = message_filters.Subscriber("camera/color/image_raw", Image)
-		# self.ts = message_filters.ApproximateTimeSynchronizer(
-		# 	[self.image_sub, self.depth_sub], 5, 5)
-		# self.ts.registerCallback(self.img_cb)
+		self.depth_sub = message_filters.Subscriber("camera/aligned_depth_to_color/image_raw", Image)
+		self.image_sub = message_filters.Subscriber("camera/color/image_raw", Image)
+		self.ts = message_filters.ApproximateTimeSynchronizer([self.image_sub, self.depth_sub], 5, 5)
+		self.ts.registerCallback(self.img_cb)
 
-		self.image_sub = rospy.Subscriber("camera/color/image_raw", Image, self.img_cb, queue_size=1)
+		#self.image_sub = rospy.Subscriber("camera/color/image_raw", Image, self.img_cb, queue_size=1)
 
 		print("Start Predicting image")
 
-	def img_cb(self, rgb_data):
+	def img_cb(self, rgb_data, depth_data):
 		cv_image = self.cv_bridge.imgmsg_to_cv2(rgb_data, "bgr8")
 		cv_image = cv2.resize(cv_image, (640,480))
 		img = cv_image.copy()
@@ -116,7 +114,7 @@ class bb_ssd_mobile_lite(object):
 
 		if len(obj_list) != 0:
 			bbox_out.header = rgb_data.header
-			# bbox_out.depth = depth_data
+			bbox_out.depth = depth_data
 			bbox_out.count = len(obj_list)
 			bbox_out.camera = "camera"
 			self.BoundingBoxes_pub.publish(bbox_out)
